@@ -57,19 +57,16 @@ int main()
 {
     auto so = Solution();
     //int nums[] = { 3,8,12,9,10,14,14,1,11,3,11,6,14,4,10};
-	string str("[10,-5,-2,4,0,3]");
+	string str("[0,1,1,0,0,1,0,0,0]");
 	auto v = getVI(str);
+	string str1("[3,19,1,14,0,4,1,8,2,7,0,13,0,13,0,0,2,2,13,1,0,3,7]");
+	auto v1 = getVI(str1);
 
 
-	string str2("[[-37,-50,-3,44],[-37,46,13,-32],[47,-42,-3,-40],[-17,-22,-39,24]]");
+	string str2("[[12,4],[8,1],[6,3]]");
 	auto v2 = getVVI(str2);
-	auto ret = so.matrixRankTransform(v2);
-	for (auto i : ret) {
-		for (auto j : i) {
-			cout << j;
-		}
-		cout << endl;
-	}
+	auto ret = so.minMoves(v, 3);
+	cout << ret;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

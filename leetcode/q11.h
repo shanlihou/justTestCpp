@@ -123,96 +123,70 @@ public:
         return recGetSum(l, r, 1, 1 << bitLen, 1);
     }
 };
+int gcd(int x, int y)
+{
+    while (y ^= x ^= y ^= x %= y);
+    return x;
+}
 
+class UnionFind {
+    int n;
+    vector<int> parent, size;
+public:
+    UnionFind(int n) {
+        this->n = n;
+        parent = vector<int>(n);
+        size = vector<int>(n, 1);
+        for (int i = 0; i < n; ++i)
+            parent[i] = i;
+    }
+    int find(int idx) {
+        if (parent[idx] == idx)
+            return idx;
+        return parent[idx] = find(parent[idx]);
+    }
+    void connect(int a, int b) {
+        int fa = find(a), fb = find(b);
+        if (fa != fb) {
+            if (size[fa] > size[fb]) {
+                parent[fb] = fa;
+                size[fa] += size[fb];
+            }
+            else {
+                parent[fa] = fb;
+                size[fb] += size[fa];
+            }
+        }
+    }
+};
 
 class Solution {
 public:
-    VVI matV;
-    VVI matH;
-    int recGetVal(int x, int y, VVI& ret) {
-        if (ret[x][y] != 0) {
-            return ret[x][y];
-        }
-
-        if (matV[x][y] == x && matH[x][y] == y) {
-            return ret[x][y] = 1;
-        }
-        else if (matV[x][y] == x) {
-            return ret[x][y] = recGetVal(x, matH[x][y], ret) + 1;
-        }
-        else if (matH[x][y] == y) {
-            return ret[x][y] = recGetVal(matV[x][y], y, ret) + 1;
-        }
-
-        int v = recGetVal(matV[x][y], y, ret);
-        int h = recGetVal(x, matH[x][y], ret);
-        return ret[x][y] = max(v, h) + 1;
-    }
-
-    vector<vector<int>> matrixRankTransform(vector<vector<int>>& mat) {
-        int m = mat.size();
-        int n = mat[0].size();
-        VVI _matV(m, VI(n, 0));
-        VVI _matH(m, VI(n, 0));
-        matV = move(_matV);
-        matH = move(_matH);
-
-        REP(i, 0, m) {
-            vector<PII> tmp;
-            REP(j, 0, n) {
-                tmp.push_back(MP(mat[i][j], j));
-            }
-            sort(all(tmp));
-            matH[i][tmp[0].second] = tmp[0].second;
-            REP(j, 1, n) {
-                if (tmp[j].first == tmp[j - 1].first) {
-                    if (tmp[j - 1].second == tmp[j - 1].second)
-                        matH[i][tmp[j].second] = tmp[j].second;
-                    else
-                        matH[i][tmp[j].second] = matH[i][tmp[j - 1].second];
-                }
-                else {
-                    matH[i][tmp[j].second] = tmp[j - 1].second;
-                }
+    int minMoves(vector<int>& nums, int k) {
+        VI q;
+        VI sums;
+        int n = nums.size();
+        int sum = 0;
+        int j = 0;
+        REP(i, 0, n) {
+            if (nums[i]) {
+                q.push_back(i - j);
+                sum += i - j;
+                sums.push_back(sum);
+                j++;
             }
         }
 
-
-        REP(j, 0, n) {
-            vector<PII> tmp;
-            REP(i, 0, m) {
-                tmp.push_back(MP(mat[i][j], i));
-            }
-            sort(all(tmp));
-            matV[tmp[0].second][j] = tmp[0].second;
-            REP(i, 1, n) {
-                if (tmp[i].first == tmp[i - 1].first) {
-                    if (matV[tmp[i - 1].second][j] == tmp[i - 1].second)
-                        matV[tmp[i].second][j] = tmp[i].second;
-                    else
-                        matV[tmp[i].second][j] = matV[tmp[i - 1].second][j];
-                }
-                else {
-                    matV[tmp[i].second][j] = tmp[i - 1].second;
-                }
-            }
+        int count = k / 2;
+        int result = INT_MAX;
+        for (int i = 0; i + k <= q.size(); i++) {
+            int mid = (2 * i + k - 1) / 2;
+            int _q = q[mid];
+            int sumi_1 = i == 0 ? 0 : sums[i - 1];
+            int mis_1 = mid == 0 ? 0 : sums[mid - 1];
+            int ret = (2 * (mid - i) - k + 1) * _q + sums[i + k - 1] - sums[mid] - mis_1 + sumi_1;
+            result = min(result, ret);
         }
-
-        VVI ret(m, VI(n, 0));
-        REP(i, 0, m) {
-            REP(j, 0, n) {
-                if (ret[i][j]) {
-                    continue;
-                }
-
-                if (matV[i][j] == i && matH[i][j] == j) {
-                    ret[i][j] = 1;
-                }
-
-                recGetVal(i, j, ret);
-            }
-        }
-
-        return ret;
+        return result;
     }
 };
