@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "q11.h"
+#include "q.h"
 const vector<string> explode(const string& s, string c)
 {
 	string buff{ "" };
@@ -39,7 +39,12 @@ VI getVI(string& str) {
 	auto _ret = explode(str, string(","));
 	VI ret;
 	for (auto j : _ret) {
-		ret.push_back(stoi(getDigit(j)));
+		auto dig = getDigit(j);
+		if (!dig.size()) {
+			ret.push_back(0);
+			continue;
+		}
+		ret.push_back(stoi(dig));
 	}
 	return ret;
 }
@@ -55,18 +60,38 @@ VVI getVVI(string &str) {
 }
 int main()
 {
-    auto so = Solution();
-    //int nums[] = { 3,8,12,9,10,14,14,1,11,3,11,6,14,4,10};
-	string str("[0,1,1,0,0,1,0,0,0]");
-	auto v = getVI(str);
-	string str1("[3,19,1,14,0,4,1,8,2,7,0,13,0,13,0,0,2,2,13,1,0,3,7]");
-	auto v1 = getVI(str1);
+ //   auto so = Solution();
+ //   //int nums[] = { 3,8,12,9,10,14,14,1,11,3,11,6,14,4,10};
+	//string str("[0,1,1,0,0,1,0,0,0]");
+	//auto v = getVI(str);
+	//string str1("[3,19,1,14,0,4,1,8,2,7,0,13,0,13,0,0,2,2,13,1,0,3,7]");
+	//auto v1 = getVI(str1);
 
 
-	string str2("[[12,4],[8,1],[6,3]]");
-	auto v2 = getVVI(str2);
-	auto ret = so.minMoves(v, 3);
-	cout << ret;
+	//string str2("[[12,4],[8,1],[6,3]]");
+	//auto v2 = getVVI(str2);
+	//auto ret = so.minMoves(v, 3);
+	//cout << ret;
+
+	vector<string> listStr({ "Fancy","append","append","getIndex","append","getIndex","addAll","append","getIndex","getIndex","append","append","getIndex","append","getIndex","append","getIndex","append","getIndex","multAll","addAll","getIndex","append","addAll","getIndex","multAll","getIndex","multAll","addAll","addAll","append","multAll","append","append","append","multAll","getIndex","multAll","multAll","multAll","getIndex","addAll","append","multAll","addAll","addAll","multAll","addAll","addAll","append","append","getIndex" });
+	string strVV("[[],[12],[8],[1],[12],[0],[12],[8],[2],[2],[4],[13],[4],[12],[6],[11],[1],[10],[2],[3],[1],[6],[14],[5],[6],[12],[3],[12],[15],[6],[7],[8],[13],[15],[15],[10],[9],[12],[12],[9],[9],[9],[9],[4],[8],[11],[15],[9],[1],[4],[10],[9]]");
+	auto vv = getVVI(strVV);
+	auto f = Fancy();
+	REP(i, 0, listStr.size()) {
+		if (listStr[i] == "append") {
+			f.append(vv[i][0]);
+		}
+		else if (listStr[i] == "getIndex") {
+			printf("%d\n", f.getIndex(vv[i][0]));
+		}
+		else if (listStr[i] == "addAll") {
+			f.addAll(vv[i][0]);
+		}
+		else if (listStr[i] == "multAll") {
+			f.multAll(vv[i][0]);
+		}
+	}
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
