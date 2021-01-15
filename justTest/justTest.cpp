@@ -58,23 +58,49 @@ VVI getVVI(string &str) {
 
 	return ret;
 }
-int main()
-{
+
+
+string getTwo(int val) {
+	string ret;
+	for (int i = 31; i >= 0; i--) {
+		if (val & twop(i)) {
+			ret += "1";
+		}
+		else {
+			if (ret.size()) {
+				ret += "0";
+			}
+		}
+	}
+	return ret;
+}
+
+void test() {
+	int mask = 97;
+	for (int i = mask; i; i = (i - 1) & mask) {
+		printf("cur:%d, %s\n", i, getTwo(i).c_str());
+	}
+}
+
+void question() {
+
     auto so = Solution();
     //int nums[] = { 3,8,12,9,10,14,14,1,11,3,11,6,14,4,10};
-	string str("[1,3,5,7,9]");
-	auto v = getVI(str);
-	string str1("[9,4,2,3,4]");
-	auto v1 = getVI(str1);
+    string str("[50,46,54,35,18,42,26,72,75,47,50,4,54,21,18,18,61,64,100,14]");
+    auto v = getVI(str);
+    string str1("[83, 34, 43, 73, 61, 94, 10, 68, 74, 31, 54, 46, 28, 60, 18, 18, 4, 44, 79, 92]");
+    auto v1 = getVI(str1);
 
 
-	string str2("[[1,2],[2,3],[2,4]]");
-	auto vv = getVVI(str2);
-	auto ret = so.countSubgraphsForEachDiameter(4, vv);
-	for (auto& i : ret) {
-		cout << i << endl;
-	};
+    string str2("[[1, 8], [14, 17], [3, 1], [17, 10], [18, 2], [7, 12], [11, 3], [1, 15], [13, 17], [18, 19], [0, 10], [15, 19], [0, 15], [6, 7], [7, 15], [19, 4], [7, 16], [14, 18], [8, 10], [17, 0], [2, 13], [14, 10], [12, 17], [2, 9], [6, 15], [16, 18], [2, 16], [2, 6], [4, 5], [17, 5], [10, 13], [7, 2], [9, 16], [15, 5], [0, 5], [8, 0], [11, 12], [9, 7], [1, 0], [11, 17], [4, 6], [5, 7], [19, 12], [3, 18], [19, 1], [13, 18], [19, 6], [13, 6], [6, 1], [4, 2]] ");
+    auto vv = getVVI(str2);
+    auto ret = so.minimumHammingDistance(v, v1, vv);
+	cout << ret;
 
+}
+int main()
+{
+	question();
 	//vector<string> listStr({ "Fancy","append","append","getIndex","append","getIndex","addAll","append","getIndex","getIndex","append","append","getIndex","append","getIndex","append","getIndex","append","getIndex","multAll","addAll","getIndex","append","addAll","getIndex","multAll","getIndex","multAll","addAll","addAll","append","multAll","append","append","append","multAll","getIndex","multAll","multAll","multAll","getIndex","addAll","append","multAll","addAll","addAll","multAll","addAll","addAll","append","append","getIndex" });
 	//string strVV("[[],[12],[8],[1],[12],[0],[12],[8],[2],[2],[4],[13],[4],[12],[6],[11],[1],[10],[2],[3],[1],[6],[14],[5],[6],[12],[3],[12],[15],[6],[7],[8],[13],[15],[15],[10],[9],[12],[12],[9],[9],[9],[9],[4],[8],[11],[15],[9],[1],[4],[10],[9]]");
 	//auto vv = getVVI(strVV);

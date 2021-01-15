@@ -11,14 +11,6 @@ int __builtin_popcount(int mask) {
     }
     return ret;
 }
-
-int __builtin_ctz(int val) {
-    int ret = 0;
-    while ((val & 1 << ret) == 0) {
-        ret++;
-    }
-    return ret - 1;
-}
 // ------------------------------------ not use ---------------------------------------------------------------
 
 #include <vector>
@@ -86,6 +78,19 @@ int BitLength(unsigned int n)
     return -1;
 }
 
+string get2(int val) {
+    string ret;
+    for (int i = 16; i >= 0; i--) {
+        if (val & twop(i)) {
+            ret += '1';
+        }
+        else {
+            ret += '0';
+        }
+    }
+    return ret;
+}
+
 int gcd(int x, int y)
 {
     while (y ^= x ^= y ^= x %= y);
@@ -122,54 +127,51 @@ public:
         }
     }
 };
-
 class Solution {
-    VVI linkList;
-    int curMask;
-    int cityNum;
 public:
-    pair<int, int> dfs(int u, int deep, int last) {
-        int deep1 = -1, deep2 = -1;
-        int maxDis = -1, maxDeep = -1;
-        cityNum++;
-        for (auto& i : linkList[u]) {
-            if (curMask & 1 << i && i != last) {
-                auto ret = dfs(i, deep + 1, u);
-                maxDis = max(maxDis, ret.first);
-                maxDeep = max(maxDeep, ret.second);
+    int minimumHammingDistance(vector<int>& source, vector<int>& target, vector<vector<int>>& allowedSwaps) {
+        int n = source.size();
+        auto uf = UnionFind(n + 1);
+        VI marks(n, 0);
+        for (auto& i : allowedSwaps) {
+            uf.connect(i[0], i[1]);
+            marks[i[0]] = 1;
+            marks[i[1]] = 1;
+        }
 
-                if (deep1 < ret.second) {
-                    deep2 = deep1;
-                    deep1 = ret.first;
-                }
-                else if (deep2 < ret.second) {
-                    deep2 = ret.second;
-                }
+        map<int, map<int, int>> maps;
+
+        REP(i, 0, n) {
+            if (!marks[i]) {
+                continue;
             }
+
+            int root = uf.find(i);
+            if (maps.count(root) == 0) {
+                maps[root] = map<int, int>();
+            }
+            maps[root][target[i]]++;
         }
 
-        maxDis = max(maxDis, maxDeep);
-        if (deep1 != -1 && deep2 != -1) {
-            maxDis = max(maxDis, deep1 + deep2 - 2 * deep);
-        }
-        return MP(maxDis, maxDeep);
-    }
+        int ret = 0;
+        REP(i, 0, n) {
+            if (!marks[i]) {
+                if (source[i] != target[i]) {
+                    ret++;
+                }
+                continue;
+            }
 
-    vector<int> countSubgraphsForEachDiameter(int n, vector<vector<int>>& edges) {
-        linkList = VVI(n, VI());
-        for (auto& i : edges) {
-            linkList[i[0] - 1].push_back(i[1] - 1);
-            linkList[i[1] - 1].push_back(i[0] - 1);
-        }
-
-        VI ret(n - 1, 0);
-        for (curMask = 1; curMask < 1 << n; curMask++) {
-            cityNum = 0;
-            auto retPair = dfs(__builtin_ctz(curMask), 0, -1);
-            if (cityNum == __builtin_popcount(curMask) && retPair.first > 0) {
-                ret[retPair.first - 1]++;
+            int root = uf.find(i);
+            auto &_maps = maps[uf.find(i)];
+            if (_maps[source[i]] > 0) {
+                _maps[source[i]]--;
+            }
+            else {
+                ret++;
             }
         }
         return ret;
     }
+
 };
